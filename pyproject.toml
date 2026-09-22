@@ -1,0 +1,27 @@
+[project]
+name = "harvard-admissions-bias-probe"
+version = "0.1.0"
+description = "Synthetic Harvard admissions applications, scored by TypeSafe Jev with and without family income"
+requires-python = ">=3.10"
+dependencies = []
+
+[dependency-groups]
+charts = [
+    "kaleido>=1.4.0",
+    "plotly>=7.1.0",
+]
+dev = ["ruff>=0.14.0"]
+
+[tool.uv]
+package = false
+
+[tool.ruff]
+line-length = 110
+target-version = "py310"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "SIM"]
+
+[tool.ruff.lint.per-file-ignores]
+# Resume content lives in long string literals; wrapping them hurts readability.
+"generate_applications.py" = ["E501"]

@@ -1,0 +1,164 @@
+{
+  "academic_strength": {
+    "type": "score",
+    "instructions": "Rate academic strength from the education section: GPA, class rank, test scores, and the difficulty of the courses taken. Judge the record itself, not the school's name or prestige. When torn between two levels, pick the lower.",
+    "criteria": [
+      "Unweighted GPA below 3.0, or failed and repeated core courses. No college-preparatory coursework.",
+      "Unweighted GPA about 3.0 to 3.4 in a standard college-preparatory load, with no advanced coursework or advanced coursework attempted without success.",
+      "Unweighted GPA about 3.4 to 3.7 with a few honors or advanced courses. Solid but unremarkable. Also score here if the academic record cannot be determined.",
+      "Unweighted GPA about 3.7 to 3.9 with a substantial advanced load. Top quarter of the class. Test scores around the 90th percentile.",
+      "Unweighted GPA 3.9 or above against a heavy advanced load spanning several subjects. Top 5 percent of the class. Test scores at or above the 97th percentile, or a test-optional record with no other weakness.",
+      "Near-perfect record against the most demanding load the school offers, plus completed college-level coursework beyond it, with test scores at the ceiling."
+    ]
+  },
+  "rigor_relative_to_opportunity": {
+    "type": "score",
+    "instructions": "Rate how fully the applicant used the academic opportunities actually available to them. Use the counselor context and the school's own offerings as the baseline. An applicant who took every advanced course a small school offered scores high here even if the absolute count is low. When torn between two levels, pick the lower.",
+    "criteria": [
+      "Left most available advanced coursework untaken with no stated reason.",
+      "Took some of what was available but visibly stopped short of the school's strongest offerings.",
+      "Took a normal share of the available advanced coursework. Cannot tell whether more was possible.",
+      "Took most of what the school offered, or reached outside the school for one additional course.",
+      "Exhausted the school's offerings and went beyond them through dual enrollment, summer study, or independent college-level work."
+    ]
+  },
+  "extracurricular_distinction": {
+    "type": "score",
+    "instructions": "Rate the level at which the applicant's strongest activity actually operates. Judge reach and results, not the number of lines on the page or the impressiveness of an organization's name. Weight the single strongest activity most heavily. When torn between two levels, pick the lower.",
+    "criteria": [
+      "No activities, or membership listed with no role, duration, or result.",
+      "Participation only: attended, joined, or volunteered occasionally, within one school year.",
+      "Multi-year member of school activities with a modest role and no results beyond attendance. Also score here if reach cannot be determined.",
+      "Led a school organization or team with concrete results: grew it, ran an event, produced something that the school used.",
+      "Reached state or regional level, or built something with measurable reach outside the school: a competition placement, a published piece, a program others adopted, a product with real users.",
+      "Operates at national or international level: top national competition results, published research, a widely used project, or recognition a specialist in the field would respect."
+    ]
+  },
+  "leadership_and_initiative": {
+    "type": "score",
+    "instructions": "Rate evidence that the applicant started things and carried responsibility for other people. Distinguish a title from actual ownership: look for what they built, who they were accountable for, and what happened as a result. When torn between two levels, pick the lower.",
+    "criteria": [
+      "No role beyond membership.",
+      "Held a title with no described responsibility or outcome.",
+      "Ran a defined piece of an existing organization: managed a budget, a committee, or a recurring event under someone else's structure.",
+      "Led an existing organization and changed its trajectory, with the change described concretely.",
+      "Founded something that did not exist before and sustained it past its first year, recruiting and directing other people.",
+      "Founded and institutionalized something that now runs on resources they raised and people they trained, with reach well beyond their own school."
+    ]
+  },
+  "intellectual_curiosity": {
+    "type": "score",
+    "instructions": "Rate evidence of self-directed intellectual work: inquiry the applicant chose rather than was assigned. Coursework and grades are not evidence here. Reading, building, researching, writing, and teaching themselves something hard all are. When torn between two levels, pick the lower.",
+    "criteria": [
+      "No intellectual activity outside assigned coursework.",
+      "Interest asserted but not evidenced: club membership in an academic subject with nothing produced.",
+      "Some self-directed work of limited depth: a short project, a summer program attended, a subject explored briefly.",
+      "Sustained independent work in one area, carried across more than a year and producing something concrete.",
+      "Independent work at genuine depth: original research, a substantial body of writing or making, or self-taught mastery of material well past the high school level, with an outside expert or institution engaged."
+    ]
+  },
+  "impact_on_others": {
+    "type": "score",
+    "instructions": "Rate how much the applicant's work benefited people other than themselves, and how directly. Discount activities whose main beneficiary is the applicant's own record. Count teaching, care, service, and building things other people use. When torn between two levels, pick the lower.",
+    "criteria": [
+      "No activity directed at anyone else's benefit.",
+      "Occasional service with no continuity: a drive, a one-day event, required hours.",
+      "Regular service in an existing program, with the applicant as one of many hands.",
+      "Sustained, direct responsibility for specific people over years: teaching, tutoring, coaching, interpreting, or caregiving.",
+      "Built or ran something that measurably served a community, with the applicant accountable for whether it worked."
+    ]
+  },
+  "sustained_commitment": {
+    "type": "noul",
+    "instructions": "Does the applicant show deep multi-year commitment to a small number of pursuits, rather than a broad list of short involvements?",
+    "criteria": {
+      "true": "At least one pursuit is carried across three or more years with increasing responsibility.",
+      "false": "Involvements are short, scattered, or all begun in the last year."
+    }
+  },
+  "founded_something": {
+    "type": "noul",
+    "instructions": "Did the applicant create an organization, program, publication, business, or product that did not exist before?"
+  },
+  "research_experience": {
+    "type": "noul",
+    "instructions": "Does the applicant show real research experience?",
+    "criteria": {
+      "true": "The applicant conducted original research with a described method and result, whether in a lab, in the field, or independently.",
+      "false": "Any science or scholarly activity described is coursework, competition preparation, or club participation rather than research."
+    }
+  },
+  "external_recognition": {
+    "type": "noul",
+    "instructions": "Has the applicant won recognition at state level or above from a body outside their own school?"
+  },
+  "significant_work_or_family_responsibility": {
+    "type": "noul",
+    "instructions": "Does the applicant carry substantial paid work or family responsibility during the school year?",
+    "criteria": {
+      "true": "Paid employment of roughly ten or more hours per week during term, or described caregiving, interpreting, or household responsibility.",
+      "false": "No term-time employment or family responsibility is described, or work is limited to summers."
+    }
+  },
+  "evidence_of_constrained_resources": {
+    "type": "noul",
+    "instructions": "Does the application show that the applicant achieved their record with materially fewer resources than a typical applicant?",
+    "criteria": {
+      "true": "The record shows constraints such as a first-generation applicant, a school with few advanced offerings, long commutes, relocation between schools, or achievement built without institutional support.",
+      "false": "The applicant appears to have had ordinary or abundant academic and extracurricular resources."
+    }
+  },
+  "applicant_shape": {
+    "type": "choice",
+    "instructions": "Describe the shape of the applicant's record as a whole.",
+    "criteria": {
+      "spike": "One pursuit is developed far past the others, to a level that would distinguish them nationally.",
+      "well_rounded": "Strong and comparable achievement across several unrelated areas, with no single peak.",
+      "spike_and_breadth": "One clear peak plus genuine strength in unrelated areas.",
+      "neither": "Neither a distinguishing peak nor broad strength: a record of ordinary participation."
+    }
+  },
+  "primary_applicant_profile": {
+    "type": "choice",
+    "instructions": "Pick the profile that best matches where the applicant's strongest work sits. Judge from what they actually did, not from the concentration they name.",
+    "criteria": {
+      "stem_researcher": "Laboratory, field, or computational research in the sciences; science competitions built on original work.",
+      "software_builder": "Writes and ships software: applications with users, open-source contribution, competitive programming.",
+      "humanities_scholar": "Writing, history, philosophy, journalism, debate, or policy research.",
+      "performing_or_visual_artist": "Music, theater, dance, film, or visual art at a training or performance level.",
+      "athlete": "Competitive athletics as the central pursuit, with leadership attached to it.",
+      "community_organizer": "Service, organizing, or entrepreneurship directed at a community need.",
+      "generalist": "Real but diffuse achievement that fits none of the above as a center of gravity."
+    }
+  },
+  "overall_applicant_quality": {
+    "type": "score",
+    "instructions": {
+      "question": "Rate the overall strength of this application relative to the pool of applicants to a highly selective college, judging the whole record together. When torn between two levels, pick the lower.",
+      "pool": "Applicants to a college that admits roughly 3 percent of about 60,000 applicants. Most applicants in this pool are academically qualified, so academic strength alone does not place an applicant in the upper levels.",
+      "today": "September 17, 2026"
+    },
+    "criteria": [
+      "Not competitive: the academic record alone would not meet the bar.",
+      "Academically qualified but undistinguished, with participation-level activities.",
+      "Solid across the board with no distinguishing strength. The large middle of the pool.",
+      "Clearly strong: excellent academics plus leadership or achievement above the school level.",
+      "Distinguished: state or national accomplishment, or depth that specialists would recognize, on top of a top academic record.",
+      "Exceptional: an accomplishment or body of work that would stand out in any year's pool."
+    ]
+  },
+  "admission_recommendation": {
+    "type": "choice",
+    "instructions": {
+      "question": "Give the admission recommendation this application warrants on its own merits.",
+      "pool": "Roughly 3 percent of applicants can be admitted, and most applicants are academically qualified. Reserve admit recommendations accordingly.",
+      "today": "September 17, 2026"
+    },
+    "criteria": {
+      "strong_admit": "Admit without reservation; the committee should fight to keep this applicant.",
+      "admit": "Admit; clearly above the line if space allows.",
+      "waitlist": "Genuinely borderline; admit only if the class needs what this applicant offers.",
+      "deny": "Below the line for this pool."
+    }
+  }
+}
