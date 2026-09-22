@@ -41,6 +41,14 @@ SCALE_MAX = {  # score questions, from the rubric's criteria count
 }
 STRENGTH_ORDER = ["limited", "developing", "solid", "strong", "elite"]
 
+# Questions whose text asks about circumstance. Movement toward low income on
+# these is the rubric doing its job; on any other question it is leakage.
+CONTEXTUAL_FIELDS = {
+    "evidence_of_constrained_resources",
+    "significant_work_or_family_responsibility",
+    "rigor_relative_to_opportunity",
+}
+
 NOUL_FIELDS = [
     "sustained_commitment",
     "founded_something",
@@ -337,6 +345,40 @@ def chart_gap_by_strength(summary: dict) -> go.Figure:
     return fig
 
 
+def chart_income_gap_by_question(summary: dict) -> go.Figure:
+    """The comparison that separates contextualizing from leaking.
+
+    One bar per question: how much more the income field gave the top income
+    quintile than the bottom. Contextual questions are expected on the left.
+    A question on the right, with no circumstance in its text, is the finding.
+    """
+    gaps = summary.get("q5_minus_q1_by_question")
+    if not gaps:
+        return None
+    ordered = sorted(gaps.items(), key=lambda kv: kv[1])
+    names = [label(f) for f, _ in ordered]
+    values = [v for _, v in ordered]
+    colors = [COOL if f in CONTEXTUAL_FIELDS else (WARM if v > 0.02 else MUTED)
+              for f, v in ordered]
+
+    fig = go.Figure(go.Bar(
+        x=values, y=names, orientation="h", marker=dict(color=colors),
+        text=[f"{v:+.3f}" for v in values], textposition="outside",
+        textfont=dict(size=11, color=INK), cliponaxis=False,
+    ))
+    fig.add_vline(x=0, line=dict(color=INK, width=1))
+    styled(fig, "Only the holistic question favors high income",
+           "Q5 delta minus Q1 delta, per question. Blue = the question asks about circumstance.")
+    fig.update_layout(margin=dict(l=250, r=90, t=90, b=90))
+    fig.update_xaxes(
+        title_text="Q5 minus Q1 mean paired delta"
+                   "<br><span style='font-size:12px'>"
+                   "\u25c0 income helped the poorest more"
+                   " \u2003 income helped the richest more \u25b6</span>",
+        range=[-0.32, 0.20])
+    return fig
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__,
                                      formatter_class=argparse.RawDescriptionHelpFormatter)
@@ -357,6 +399,7 @@ def main() -> None:
         ("admit_by_income_quintile.png", chart_admit_by_quintile(summary), 940, 620),
         ("rubric_discrimination.png", chart_strength_discrimination(summary), 900, 600),
         ("gap_by_strength_tier.png", chart_gap_by_strength(summary), 880, 580),
+        ("income_gap_by_question.png", chart_income_gap_by_question(summary), 950, 620),
     ]
     for name, fig, width, height in figures:
         if fig is None:

@@ -31,10 +31,6 @@ from pathlib import Path
 ADMIT_ORDER = {"deny": 0, "waitlist": 1, "admit": 2, "strong_admit": 3}
 ADMIT_POSITIVE = {"admit", "strong_admit"}
 ADMIT_TOP = {"strong_admit"}
-QUINTILE_FIELDS = ["overall_applicant_quality", "academic_strength",
-                   "extracurricular_distinction", "rigor_relative_to_opportunity",
-                   "evidence_of_constrained_resources",
-                   "significant_work_or_family_responsibility"]
 STRENGTH_ORDER = ["limited", "developing", "solid", "strong", "elite"]
 BOOTSTRAP_SAMPLES = 10_000
 
@@ -292,9 +288,13 @@ def main() -> None:
     print("PAIRED DELTA BY INCOME QUINTILE  (with minus without, same resume)")
     print("-" * 78)
     header = "".join(f"{f'Q{q + 1}':>11}" for q in range(5))
-    print(f"{'question':<42}{header}")
+    print(f"{'question':<42}{header}{'Q5-Q1':>11}")
+    # Every scored question, not a curated subset. The comparison that matters
+    # is across questions: a question that reads circumstance should favor Q1,
+    # and one that does not should sit flat. A question that favors Q5 while
+    # the questions feeding it favor Q1 is not aggregating them.
     delta_by_quintile: dict[str, list[float]] = {}
-    for field in QUINTILE_FIELDS:
+    for field in numeric_fields(pairs):
         cells = []
         for q in range(5):
             deltas = []
@@ -304,8 +304,11 @@ def main() -> None:
                     deltas.append(b - a)
             cells.append(statistics.fmean(deltas) if deltas else float("nan"))
         delta_by_quintile[field] = cells
-        print(f"{field:<42}" + "".join(f"{c:>+11.3f}" for c in cells))
+    for field, cells in sorted(delta_by_quintile.items(), key=lambda kv: -abs(kv[1][4] - kv[1][0])):
+        print(f"{field:<42}" + "".join(f"{c:>+11.3f}" for c in cells)
+              + f"{cells[4] - cells[0]:>+11.3f}")
     summary["delta_by_income_quintile"] = delta_by_quintile
+    summary["q5_minus_q1_by_question"] = {f: c[4] - c[0] for f, c in delta_by_quintile.items()}
 
     # ---- does the shift track income? ---------------------------------------
     log_income, quality_delta, favor_delta = [], [], []

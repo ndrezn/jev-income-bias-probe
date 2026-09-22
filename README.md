@@ -148,13 +148,15 @@ Four findings:
   `developing` and `solid` it is 0.19 and 0.22. When the transcript decides
   the answer by itself, income changes nothing. When the answer is close,
   income tips it.
-- **The final recommendation does not track income.** 40 of 500 applicants
-  changed recommendation, but the shift correlates with income at r = -0.018
-  and the flips are near-balanced in every quintile. The leak is in the
-  continuous scores, not yet in the discrete call.
-- **The legitimate reads are legitimate and large.**
-  `evidence_of_constrained_resources` moved +0.147 in Q1 and -0.120 in Q5, the
-  biggest swing in the run, and that question is supposed to read income.
+- **Only the holistic question favors high income.** Of the thirteen scored
+  questions, twelve are flat across income or tilt toward low-income
+  applicants. `overall_applicant_quality` is the single exception. The
+  components that feed a holistic judgment do not carry the gradient the
+  holistic judgment carries.
+- **The final recommendation does not track income**, correlating with it at
+  r = -0.018 across 40 flips. Read that as resolution rather than safety: a
+  0.138 shift on a 0 to 5 scale rarely crosses a boundary in a four-level
+  categorical field.
 
 ### The rubric discriminates
 
@@ -196,6 +198,52 @@ spread of transcripts it is flat: -0.001 in Q1, +0.004 in Q5. The earlier
 result was an artifact of a pool where every GPA was a 3.9.
 
 ![Per-applicant quality delta against income](charts/quality_delta_vs_income.png)
+
+### Contextualizing or leaking
+
+A rubric that reads circumstance is supposed to move when income appears. The
+question is which questions move, and which way. Questions whose text asks
+about circumstance should favor low-income applicants. Questions whose text
+does not mention it should sit flat.
+
+![Q5 minus Q1 delta per question](charts/income_gap_by_question.png)
+
+Twelve of thirteen questions do exactly that. One does not.
+
+| Question | Q1 | Q5 | Q5 − Q1 | Asks about circumstance? |
+|---|---|---|---|---|
+| `evidence_of_constrained_resources` | +0.147 | -0.120 | -0.267 | yes |
+| `rigor_relative_to_opportunity` | +0.034 | +0.003 | -0.031 | yes |
+| `intellectual_curiosity` | +0.008 | -0.015 | -0.024 | no |
+| `significant_work_or_family_responsibility` | +0.036 | +0.019 | -0.017 | yes |
+| `leadership_and_initiative` | +0.022 | +0.012 | -0.011 | no |
+| `impact_on_others` | +0.015 | +0.009 | -0.006 | no |
+| `research_experience` | +0.001 | -0.004 | -0.005 | no |
+| `founded_something` | +0.008 | +0.005 | -0.004 | no |
+| `extracurricular_distinction` | -0.012 | -0.015 | -0.003 | no |
+| `sustained_commitment` | +0.005 | +0.002 | -0.002 | no |
+| `academic_strength` | -0.001 | +0.004 | +0.005 | no |
+| `external_recognition` | -0.003 | +0.007 | +0.011 | no |
+| **`overall_applicant_quality`** | **-0.107** | **+0.032** | **+0.138** | **no** |
+
+For a Q1 applicant, revealing income raises the constrained-resources claim
+by 0.147, work responsibility by 0.036, rigor by 0.034, leadership by 0.022,
+impact by 0.015, and curiosity by 0.008. Academic strength and extracurricular
+distinction do not move. Then the question that asks the model to judge "the
+whole record together" drops 0.107.
+
+Eleven of twelve component signals point up or sit at zero, and the aggregate
+they summarize points down. That is not a weighting choice, and it is not
+contextualization: if the model were crediting achievement against
+opportunity, the contextual questions would move up and the summary would
+follow them. It moves the other way.
+
+`overall_applicant_quality` is also one of only two questions carrying the
+"3 percent admit, most applicants qualified" pool framing, which asks for a
+relative ranking rather than an absolute read. A prior about who succeeds in
+that pool is the kind of thing that would be income-correlated. The other
+question with that framing is `admission_recommendation`, which did not move
+with income, so the framing alone does not explain it.
 
 ### Every question
 
@@ -265,7 +313,11 @@ adjustment reaching applicants it is meant to reach.
 
 The practical read: if you consume `overall_applicant_quality` as a ranking
 signal, it carries an income gradient. If you branch only on
-`admission_recommendation`, this run does not show income changing the call.
+`admission_recommendation`, this run does not show income changing the call —
+but a four-level field is a coarse instrument, and the shift measured on the
+continuous scale is smaller than the gap between its levels. Treat the
+unmoved recommendation as a resolution limit rather than as evidence that
+nothing moved.
 
 ### Caveats
 
@@ -286,6 +338,6 @@ confound the tier breakdown above.
 uv run --group charts python make_charts.py
 ```
 
-Writes the seven PNGs above to `charts/` from `results/summary.json` and
+Writes the eight PNGs above to `charts/` from `results/summary.json` and
 `results/per_applicant_deltas.csv`. Kaleido needs a Chrome binary; if the
 export fails, run `uv run --group charts plotly_get_chrome`.
