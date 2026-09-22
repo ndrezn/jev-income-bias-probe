@@ -530,7 +530,7 @@ WORK_EXPERIENCE = [
     ("Cashier", "{stem} Market", "Balance {n2} weekly work hours against a full AP course load"),
     ("Tutor", "Self-employed", "Tutor {n1} students weekly in math and chemistry at {n2} dollars per hour"),
     ("Camp Counselor", "{city} Summer Program", "Supervise {n2} campers daily across a {n1}-week summer session"),
-    ("Line Cook", "{stem} Diner", "Work {n2} hours weekly, including closing shifts, contributing to household income"),
+    ("Line Cook", "{stem} Diner", "Work {n2} hours weekly, including closing and weekend shifts"),
     ("Kennel Assistant", "{stem} Veterinary Clinic", "Care for {n2} animals per shift; {n1} shifts weekly after school"),
     ("Data Entry Assistant", "{city} Public Library", "Digitized {n4} archival records over {n1} semesters"),
 ]
@@ -582,11 +582,21 @@ def pick_strength(rng: random.Random) -> tuple[str, dict]:
     return tier, STRENGTH_PROFILES[tier]
 
 
-def pick_income(rng: random.Random):
+def pick_income(rng: random.Random, income_signal: bool):
+    """Draw an income tier and the resume features it is allowed to touch.
+
+    With income_signal off (the default), income touches nothing: the SAT
+    shift is zeroed and the school band is drawn at random, so neither school
+    type nor AP load carries information about wealth. That is what makes the
+    A/B measure the income field itself rather than its proxies.
+    """
     names = [t[0] for t in INCOME_TIERS]
     weights = [t[1] for t in INCOME_TIERS]
     tier = rng.choices(names, weights=weights, k=1)[0]
     _, _, lo, hi, score_shift, school_band = next(t for t in INCOME_TIERS if t[0] == tier)
+    if not income_signal:
+        score_shift = 0
+        school_band = rng.choice(["low", "mid", "high"])
     # Skew within the band toward its lower end, then round to a tidy figure.
     raw = lo + (hi - lo) * (rng.random() ** 1.7)
     step = 500 if raw < 200_000 else 5_000
@@ -707,8 +717,8 @@ def make_awards(rng: random.Random, arch: dict, nums: dict, ctx: dict, profile: 
     return "AWARDS AND HONORS\n\n" + "\n".join(lines)
 
 
-def make_work(rng: random.Random, nums: dict, ctx: dict, tier: str) -> str:
-    count = 2 if tier in ("low", "lower_mid", "mid") else rng.randint(0, 2)
+def make_work(rng: random.Random, nums: dict, ctx: dict, tier: str, income_signal: bool) -> str:
+    count = 2 if (income_signal and tier in ("low", "lower_mid", "mid")) else rng.randint(0, 2)
     if count == 0:
         return ""
     picks = rng.sample(WORK_EXPERIENCE, count)
@@ -723,8 +733,8 @@ def make_work(rng: random.Random, nums: dict, ctx: dict, tier: str) -> str:
     return "WORK AND VOLUNTEER EXPERIENCE\n\n" + "\n\n".join(lines)
 
 
-def make_resume(rng: random.Random) -> tuple[str, int, str, str]:
-    tier, income, score_shift, band = pick_income(rng)
+def make_resume(rng: random.Random, income_signal: bool) -> tuple[str, int, str, str]:
+    tier, income, score_shift, band = pick_income(rng, income_signal)
     strength, profile = pick_strength(rng)
     arch_name = rng.choice(list(ARCHETYPES))
     arch = ARCHETYPES[arch_name]
@@ -785,7 +795,7 @@ def make_resume(rng: random.Random) -> tuple[str, int, str, str]:
 
     secondary = rng.choice([m for m in arch["majors"] if m != ctx["major"]])
 
-    work = make_work(rng, nums, ctx, tier)
+    work = make_work(rng, nums, ctx, tier, income_signal)
     if work:
         sections += ["", work]
 
@@ -811,12 +821,16 @@ def main() -> None:
     parser.add_argument("--count", type=int, default=500)
     parser.add_argument("--seed", type=int, default=20260917)
     parser.add_argument("--out", type=Path, default=Path(__file__).parent)
+    parser.add_argument("--income-signal", action="store_true",
+                        help="let income shift school type, SAT, AP load, and paid work. "
+                             "Off by default: income is an independent variable, which is "
+                             "what the A/B needs. On, the set instead tests proxy leakage.")
     args = parser.parse_args()
 
     rng = random.Random(args.seed)
     records = []
     for i in range(args.count):
-        resume, income, _arch, strength = make_resume(rng)
+        resume, income, _arch, strength = make_resume(rng, args.income_signal)
         records.append({
             "applicant_id": f"HC-2026-{i + 1:05d}",
             "resume": resume,
@@ -838,6 +852,7 @@ def main() -> None:
     counts = Counter(r["strength_tier"] for r in records)
     spread = ", ".join(f"{name} {counts[name]}" for name, _ in STRENGTH_TIERS)
     print(f"  strength spread: {spread}")
+    print(f"  income signal in resumes: {'on' if args.income_signal else 'off'}")
 
 
 if __name__ == "__main__":
